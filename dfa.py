@@ -1,71 +1,73 @@
 class dfa:
     graph = []
+
     def __init__(self, nodes):
         for i in range(nodes):
-            nodeInfo=[]
-            nodeInfo.append(i) # node index
-            nodeInfo.append(False) # final node?
+            nodeInfo = []
+            nodeInfo.append(i)
+            nodeInfo.append(False)
             self.graph.append(nodeInfo)
+
     def put(self):
         print(self.graph)
+
     def addEdge(self, edge):
         nextNode = (edge[1], edge[2])
         self.graph[edge[0]].append(nextNode)
-    def initialState(self, k):
-        self.begin = k
-    def finalState(self, k):
-        self.graph[k][1] = True
-    def checkNextLetter(self, k, word):
-        #TODO check if theres a next edge for the current letter
+
+    def setInitialState(self, q):
+        self.initialState = q
+
+    def finalState(self, q):
+        self.graph[q][1] = True
+
+    def checkNextLetter(self, q, word, path):
         if not word:
-            if self.graph[k][1]:
-                return True
+            if self.graph[q][1]:
+                path.append(q)
+                return path
             return False
-        if len(self.graph[k]) == 2:
+        if len(self.graph[q]) == 2:
             return False
-        for e in range(2, len(self.graph[k])):
-            if word[0] == self.graph[k][e][1]:
-                #newPath = path
-                #newPath.append(k)
-                return self.checkNextLetter(self.graph[k][e][0], word[1:])
+        for edge in range(2, len(self.graph[q])):
+            if word[0] == self.graph[q][edge][1]:
+                newPath = path
+                newPath.append(q)
+                return self.checkNextLetter(self.graph[q][edge][0], word[1:], newPath)
         return False
+
     def checkWord(self, word):
-        currentState = self.begin
+        currentState = self.initialState
         path = []
-        path.append(self.begin)
-        #print(begin, word, path)
-        result = self.checkNextLetter(begin, word)
-        return result
+        path.append(self.initialState)
+        result = self.checkNextLetter(initialState, word, path)
+        if result:
+            print(True, *result)
+        else:
+            print(result)
 
-cin = open('input.txt', 'r')
+
+cin = open("input.txt")
 init = cin.readline().split()
-nodes = int(init[0])
-edges = int(init[1])
-print(f"nodes = {nodes}")
-print(f"edges = {edges}")
-G = dfa(nodes)
+numberOfNodes = int(init[0])
+numberOfEdges = int(init[1])
 
-for i in range(edges):
+G = dfa(numberOfNodes)
+
+for i in range(numberOfEdges):
     edge = cin.readline().split()
     edge[0], edge[1] = int(edge[0]), int(edge[1])
     G.addEdge(edge)
 
-begin = int(cin.readline())
-G.initialState(begin)
+initialState = int(cin.readline())
+G.setInitialState(initialState)
 
-finalStates = [int(k) for k in cin.readline().split()]
+finalStates = [int(q) for q in cin.readline().split()]
 finalStates.pop(0)
-for k in finalStates:
-    G.finalState(k)
+for q in finalStates:
+    G.finalState(q)
 
-G.put()
 numberOfWords = int(cin.readline())
-
 for i in range(numberOfWords):
     word = cin.readline()[:-1]
-    print(word)
-    print(G.checkNextLetter(G.begin, word))
-
-
-
-
+    G.checkWord(word)
