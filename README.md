@@ -5,4 +5,5 @@
 * "0 1 a" and "0 2 b" -> [0, False, (1, a), (2, b)]
 * "3 5 c" -> [3, False, (5, c)]
 * "4 4 a" and "4 5 c" -> [4, False, (4, a), (5, c)]
-* So far the code only checks if a word is accepted by the DFA
+
+* For each word, the program prints either False or True followed by the path of the accepted word
