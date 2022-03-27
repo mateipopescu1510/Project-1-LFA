@@ -1,8 +1,8 @@
 class dfa:
     graph = []
 
-    def __init__(self, nodes):
-        for i in range(nodes):
+    def __init__(self, numberOfNodes):
+        for i in range(numberOfNodes):
             nodeInfo = []
             nodeInfo.append(i)
             nodeInfo.append(False)
@@ -34,6 +34,7 @@ class dfa:
                 newPath = path
                 newPath.append(q)
                 return self.checkNextLetter(self.graph[q][edge][0], word[1:], newPath)
+                break
         return False
 
     def checkWord(self, word):
@@ -42,32 +43,35 @@ class dfa:
         path.append(self.initialState)
         result = self.checkNextLetter(initialState, word, path)
         if result:
-            print(True, *result)
+            print(True, *result[1:])
         else:
             print(result)
 
-
 cin = open("input.txt")
+
 init = cin.readline().split()
 numberOfNodes = int(init[0])
 numberOfEdges = int(init[1])
 
-G = dfa(numberOfNodes)
+Graph = dfa(numberOfNodes)
 
 for i in range(numberOfEdges):
     edge = cin.readline().split()
     edge[0], edge[1] = int(edge[0]), int(edge[1])
-    G.addEdge(edge)
+    Graph.addEdge(edge)
 
 initialState = int(cin.readline())
-G.setInitialState(initialState)
+Graph.setInitialState(initialState)
 
 finalStates = [int(q) for q in cin.readline().split()]
 finalStates.pop(0)
 for q in finalStates:
-    G.finalState(q)
+    Graph.finalState(q)
 
 numberOfWords = int(cin.readline())
 for i in range(numberOfWords):
     word = cin.readline()[:-1]
-    G.checkWord(word)
+    if word == "#":
+        Graph.checkWord("")
+    else:
+        Graph.checkWord(word)
